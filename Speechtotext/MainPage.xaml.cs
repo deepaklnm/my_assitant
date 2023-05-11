@@ -223,7 +223,7 @@ namespace Speechtotext
 
                 HttpClient client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, VideoReqUrl);
-                request.Headers.Add("Authorization", "Basic WkdWbGNHRnJMblJwZDJGeWFTNHhPVGc1UUdkdFlXbHNMbU52YlE6d0lCTTJ0ejhTZTJITTRtTVJUdkVN");
+                request.Headers.Add("Authorization", "Basic <Key>");
                 var content = new StringContent("", null, "text/plain");
                 request.Content = content;
                 HttpResponseMessage response = await client.SendAsync(request);
@@ -255,7 +255,7 @@ namespace Speechtotext
                 Uri VideoReqUrl = new Uri(ApiUri);
                 HttpClient client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.d-id.com/talks");
-                request.Headers.Add("Authorization", "Basic WkdWbGNHRnJMblJwZDJGeWFTNHhPVGc1UUdkdFlXbHNMbU52YlE6d0lCTTJ0ejhTZTJITTRtTVJUdkVN");
+                request.Headers.Add("Authorization", "Basic <key>");
 
                 Script scriptC = new Script();
                 scriptC.type = "text";
