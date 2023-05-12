@@ -18,6 +18,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Core;
 using Newtonsoft.Json;
 using System.Threading;
+using Windows.UI.Notifications;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -93,6 +94,12 @@ namespace Speechtotext
 
         private string currentVideoLink = "ms-appx:///Assets/sampleMockVid.mp4";
 
+        static string defaultImagePerson = "https://www.netsciences.com/files/2017/11/6.jpg";
+
+        static string authDiKey = "";
+
+        static string Di_VoiceId = "hi-IN-SwaraNeural";
+
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;
@@ -126,12 +133,8 @@ namespace Speechtotext
             var audioConfig = AudioConfig.FromDefaultMicrophoneInput();
             speechRecognizer = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(speechConfig, audioConfig);
 
-            //string videSrc = Task.Run(async () => await ConvertTextToVideoLinkId("Hello, this is a demo for our hackathon 2023 project on Open AI.This is an AI generated video.")).Result;
-            string videSrc = "https://d-id-talks-prod.s3.us-west-2.amazonaws.com/google-oauth2%7C115582271522269271554/tlk_QgfrvTxfb6nGhGNSt-l6H/1683622090499.mp4?AWSAccessKeyId=AKIA5CUMPJBIK65W6FGA&Expires=1683708495&Signature=PayJhhr%2FrRA0FiJMFgatiVZn%2B54%3D&X-Amzn-Trace-Id=Root%3D1-645a08cf-5de44550482bcf775dcfe6a3%3BParent%3D69bf43941cbf7c34%3BSampled%3D1%3BLineage%3D6b931dd4%3A0";
+            VideoImage.Visibility = Visibility.Visible;
 
-            this.currentVideoLink = videSrc;
-            VideoState.Source = MediaSource.CreateFromUri(new Uri(videSrc));
-            VideoState.Visibility = Visibility.Visible;
         }
 
 
@@ -174,14 +177,20 @@ namespace Speechtotext
             Response<Completions> completionsResponse = client.GetCompletions(engine, completionsOptions);
             string text = completionsResponse.Value.Choices[0].Text.Trim();
             Console.WriteLine($"Azure OpenAI response: {text}");
-
-            string videSrc = Task.Run(async () => await ConvertTextToVideoLinkId(text)).Result;
+            VideoImage.Visibility = Visibility.Visible;
+          /*  string videSrc = Task.Run(async () => await ConvertTextToVideoLinkId(text)).Result;*/
+            string videSrc = "https://d-id-talks-prod.s3.us-west-2.amazonaws.com/google-oauth2%7C115582271522269271554/tlk_DwOXJA_zacT2k5DZiELQS/1683872957587.mp4?AWSAccessKeyId=AKIA5CUMPJBIK65W6FGA&Expires=1683959360&Signature=TWDB0rAPLoMeo0zwVe5UdXYb9g4%3D&X-Amzn-Trace-Id=Root%3D1-645ddcc0-4d41a56551d2247b609fe50e%3BParent%3D8d3dac37ab3bed1e%3BSampled%3D1%3BLineage%3D6b931dd4%3A0";
 
             this.currentVideoLink = videSrc;
-            VideoState.Source = MediaSource.CreateFromUri(new Uri(videSrc));
-            VideoState.Visibility = Visibility.Visible;
-            //VideoState.AutoPlay = true;
-
+            _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                VideoState.Source = MediaSource.CreateFromUri(new Uri(videSrc));
+                VideoState.Visibility = Visibility.Visible;
+                VideoState.AutoPlay = true;
+                VideoImage.Visibility = Visibility.Collapsed;
+            });
+          
+           /* VideoState.AutoPlay = true;
+*/
 
             /*var speechConfig = SpeechConfig.FromSubscription(speechKey, speechRegion);
             // The language of the voice that speaks.
@@ -214,7 +223,7 @@ namespace Speechtotext
 
         private static async Task<string> FetchTheVideoLink(string id)
         {
-            string respVideoSrc = "ms-appx:///Assets/sampleMockVid.mp4";
+            string respVideoSrc = "";
             try
             {
                 Debug.WriteLine("[IdToVideoLink] Fetchingthe video url started: ");
@@ -223,7 +232,7 @@ namespace Speechtotext
 
                 HttpClient client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, VideoReqUrl);
-                request.Headers.Add("Authorization", "Basic <Key>");
+                request.Headers.Add("Authorization", authDiKey);
                 var content = new StringContent("", null, "text/plain");
                 request.Content = content;
                 HttpResponseMessage response = await client.SendAsync(request);
@@ -231,6 +240,10 @@ namespace Speechtotext
                 var resp = await response.Content.ReadAsStringAsync();
                 Debug.WriteLine("[IdToVideoLink] Fetchingthe video url response: " + resp);
                 RootVideo videoResp = JsonConvert.DeserializeObject<RootVideo>(resp);
+                if(videoResp != null && string.Equals(videoResp.status, "started"))
+                {
+                    return string.Empty;
+                }
                 Debug.WriteLine($"[IdToVideoLink] Fetchingthe video url from object:  {videoResp.result_url}");
 
 
@@ -255,18 +268,18 @@ namespace Speechtotext
                 Uri VideoReqUrl = new Uri(ApiUri);
                 HttpClient client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.d-id.com/talks");
-                request.Headers.Add("Authorization", "Basic <key>");
+                request.Headers.Add("Authorization", authDiKey);
 
                 Script scriptC = new Script();
                 scriptC.type = "text";
                 scriptC.input = text;
                 Provider pr = new Provider();
                 pr.type = "microsoft";
-                pr.voice_id = "en-US-JennyNeural";
+                pr.voice_id = Di_VoiceId;
                 scriptC.provider = pr;
                 Root root = new Root();
                 root.script = scriptC;
-                root.source_url = "https://s-media-cache-ak0.pinimg.com/736x/b2/b5/b3/b2b5b30e4b4b75365ce57ca30040e76a--female-faces-female-face-claims.jpg";
+                root.source_url = defaultImagePerson;
 
                 string contS = JsonConvert.SerializeObject(root);
                 var content = new StringContent(contS, null, "application/json");
@@ -279,8 +292,17 @@ namespace Speechtotext
                 RootVideoIdReq respVideoId = JsonConvert.DeserializeObject<RootVideoIdReq>(resp);
                 Debug.WriteLine($"[ConvertTextToVideoLinkId] Fetching the video url from object:  {respVideoId.id}");
 
-                Thread.Sleep(5000);
+                Thread.Sleep(3000);
+
                 respVideoSrc = await FetchTheVideoLink(respVideoId.id).ConfigureAwait(false);
+                int retry = 10;
+                while (string.IsNullOrEmpty(respVideoSrc) && retry > 0)
+                {
+                    Thread.Sleep(2000);
+                    respVideoSrc = await FetchTheVideoLink(respVideoId.id).ConfigureAwait(false);
+                    retry--;
+
+                }
                 return respVideoSrc;
 
             }
