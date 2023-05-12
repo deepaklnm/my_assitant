@@ -40,7 +40,7 @@ namespace Speechtotext
         static string openAIEndpoint = "";
 
         // Enter the deployment name you chose when you deployed the model.
-        static string engine = ";
+        static string engine = "";
 
         public class Provider
         {
