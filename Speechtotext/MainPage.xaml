@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -16,8 +16,16 @@
         </Grid.RowDefinitions>
         <TextBlock x:Name="StatusTextBlock" Grid.Row="0" Margin="20" FontSize="24"/>
         <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="20">
-                <Button x:Name="StartButton" Content="How May I help You" Click="StartButton_Click" Margin="0,0,20,0"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="20" Height="110" Width="364">
+                <TextBlock  Text="Hi, How May I help You?" Foreground="White" Height="32"></TextBlock>
+                <Button x:Name="StartButton" Click="StartButton_Click" Background="Transparent" Margin="0,0,20,0">
+                    <PersonPicture Background="{StaticResource SystemAccentColor}" ProfilePicture="https://thumbs.dreamstime.com/b/voice-assistant-smart-icon-digital-speaker-home-vector-computer-control-device-176557944.jpg"  Height="86" UseLayoutRounding="False" Width="118" d:LayoutRounding="Auto" RenderTransformOrigin="0.5,0.5" >
+                        <PersonPicture.RenderTransform>
+                            <CompositeTransform Rotation="0.637"/>
+                        </PersonPicture.RenderTransform>
+
+                    </PersonPicture>
+                </Button>
                 <!--Button x:Name="StopButton" Content="Stop Recording" Click="StopButton_Click"/-->
             </StackPanel>
             <Image Source="https://pieraccini.com/wp-content/uploads/cache/images/2021/05/women_calling/women_calling-1268588215.png"  x:Name="VideoImage" Height="500" />
@@ -26,6 +34,6 @@
                     AreTransportControlsEnabled="True" Margin="-9,50,9,-50" Height="500"/>
             <!--TextBox x:Name="TranscriptionTextBox" Grid.Row="2" Margin="20" FontSize="24" AcceptsReturn="True"/-->
         </StackPanel>
-        
+
     </Grid>
 </Page>
