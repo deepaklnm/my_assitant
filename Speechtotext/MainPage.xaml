@@ -28,7 +28,7 @@
                 </Button>
                 <!--Button x:Name="StopButton" Content="Stop Recording" Click="StopButton_Click"/-->
             </StackPanel>
-            <Image Source="https://pieraccini.com/wp-content/uploads/cache/images/2021/05/women_calling/women_calling-1268588215.png"  x:Name="VideoImage" Height="500" />
+            <Image Source="https://www.netsciences.com/files/2017/11/6.jpg"  x:Name="VideoImage" Height="500" />
             <MediaPlayerElement x:Name="VideoState" Visibility="Collapsed"
                     MaxWidth="900" MaxHeight="500"  AutoPlay="False"
                     AreTransportControlsEnabled="True" Margin="-9,50,9,-50" Height="500"/>
