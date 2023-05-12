@@ -94,7 +94,7 @@ namespace Speechtotext
 
         private string currentVideoLink = "ms-appx:///Assets/sampleMockVid.mp4";
 
-        static string defaultImagePerson = "https://pieraccini.com/wp-content/uploads/cache/images/2021/05/women_calling/women_calling-1268588215.png";
+        static string defaultImagePerson = "https://www.netsciences.com/files/2017/11/6.jpg";
 
         static string authDiKey = "";
 
@@ -178,9 +178,9 @@ namespace Speechtotext
             string text = completionsResponse.Value.Choices[0].Text.Trim();
             Console.WriteLine($"Azure OpenAI response: {text}");
             VideoImage.Visibility = Visibility.Visible;
-            string videSrc = Task.Run(async () => await ConvertTextToVideoLinkId(text)).Result;
-            /*  string videSrc = "https://d-id-talks-prod.s3.us-west-2.amazonaws.com/google-oauth2%7C115582271522269271554/tlk_VofC0ESDhD7HBqV-z0WnB/1683867311562.mp4?AWSAccessKeyId=AKIA5CUMPJBIK65W6FGA&Expires=1683953714&Signature=NU8ndvYzrmmSc7NomUT9V5DuDes%3D&X-Amzn-Trace-Id=Root%3D1-645dc6b2-2ca292ca5791583b51de2351%3BParent%3D17070e920eae80b5%3BSampled%3D1%3BLineage%3D6b931dd4%3A0"; */
-           
+          /*  string videSrc = Task.Run(async () => await ConvertTextToVideoLinkId(text)).Result;*/
+            string videSrc = "https://d-id-talks-prod.s3.us-west-2.amazonaws.com/google-oauth2%7C115582271522269271554/tlk_DwOXJA_zacT2k5DZiELQS/1683872957587.mp4?AWSAccessKeyId=AKIA5CUMPJBIK65W6FGA&Expires=1683959360&Signature=TWDB0rAPLoMeo0zwVe5UdXYb9g4%3D&X-Amzn-Trace-Id=Root%3D1-645ddcc0-4d41a56551d2247b609fe50e%3BParent%3D8d3dac37ab3bed1e%3BSampled%3D1%3BLineage%3D6b931dd4%3A0";
+
             this.currentVideoLink = videSrc;
             _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                 VideoState.Source = MediaSource.CreateFromUri(new Uri(videSrc));
